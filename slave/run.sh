@@ -7,5 +7,9 @@ sed -i 's/'"passwd \= \'pass\'"'/passwd \= '\'"$MASTER_ENV__SLAVE_PASSWORD"\''/'
 echo $SLAVE_DESCRIPTION > /usr/src/app/slave/info/host
 echo $SLAVE_ADMINISTRATOR > /usr/src/app/slave/info/admin
 
+# Start SSH-Agent
+eval `ssh-agent`
+
+
 # Run build-slave
 twistd --nodaemon --no_save -y /usr/src/app/slave/buildbot.tac
