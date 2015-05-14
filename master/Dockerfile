@@ -1,6 +1,14 @@
 FROM python:2-onbuild
 MAINTAINER Junaid Ali <junaid@dockerhub.com>
 
-WORKDIR /usr/src/app
-ENTRYPOINT ["twistd", "--nodaemon", "--no_save", "-y", "master/buildbot.tac", "-l -"]
-EXPOSE 8010 9989
+# Environment Variables for customization
+ENV ADMIN_USERNAME "administrator"
+ENV ADMIN_PASSWORD "LadCypsIkGon"
+ENV SLAVE_USERNAME "example-slave"
+ENV SLAVE_PASSWORD "pass"
+ENV PROJECT_TITLE "Pyflakes"
+ENV PROJECT_URL "https://launchpad.net/pyflakes"
+
+ADD ./run.sh /usr/src/app/run.sh
+RUN chmod +x /usr/src/app/run.sh
+ENTRYPOINT ["/usr/src/app/run.sh"]
