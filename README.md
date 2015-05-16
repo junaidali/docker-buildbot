@@ -58,14 +58,21 @@ To start a buildmaster that uses a custom repository and project
       junaid/buildbot-master
 
 ### Slave images
-The slave is used to run the different builds depending upon the configuration of the build server. The slave uses linked containers to avoid exposing the buildbot RPC port (9989) over the network.
+The slave is used to run the different builds depending upon the configuration of the build server. The slave uses linked containers to avoid exposing the buildbot RPC port (9989) over the network. It also supports running the slave connecting to a master specified by IP address/hostname.
 
-The run the buildbot slave image
+The run the buildbot slave image linked to a master container
 
     docker run -d --link master:master --name=slave junaid/buildbot-slave
+
+The run the buildbot slave without linked container, connecting to master at 192.168.10.10
+
+    docker run -d -e MASTER_HOST=192.168.10.10 -e SLAVE_USERNAME=sample-slave -e SLAVE_PASSWORD=slavepassword --name=slave junaid/buildbot-slave
 
 #### Environment Variables
 The buildbot slave supports the following Environment Variables
 
 + SLAVE_DESCRIPTION : This is a small description of the slave (e.g. This is my slave).
 + SLAVE_ADMINISTRATOR : This is details of the Administrator account who monitors the slave (e.g. Joe Harris <joe.harris.company.com>)
++ MASTER_HOST : The master host information (in case not using linked container)
++ SLAVE_USERNAME : The slave's username (in case not using linked container)
++ SLAVE_PASSWORD : The slave's password (in case not using linked container)
