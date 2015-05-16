@@ -1,8 +1,17 @@
 #!/bin/bash
-# Replace environment variables
-sed -i 's/localhost/'"$MASTER_PORT_8010_TCP_ADDR"'/' /usr/src/app/slave/buildbot.tac
-sed -i 's/example-slave/'"$MASTER_ENV_SLAVE_USERNAME"'/' /usr/src/app/slave/buildbot.tac
-sed -i 's/'"passwd \= \'pass\'"'/passwd \= '\'"$MASTER_ENV__SLAVE_PASSWORD"\''/' /usr/src/app/slave/buildbot.tac
+# Replace environment variables with master's shared variables in case the user did not provide explicit environment variables
+
+if [ -z "$MASTER_NAME" ]; then
+	# Use user supplied environment
+	sed -i 's/localhost/'"$MASTER_HOST"'/' /usr/src/app/slave/buildbot.tac
+	sed -i 's/example-slave/'"$SLAVE_USERNAME"'/' /usr/src/app/slave/buildbot.tac
+	sed -i 's/'"passwd \= \'pass\'"'/passwd \= '\'"$SLAVE_PASSWORD"\''/' /usr/src/app/slave/buildbot.tac
+else
+	# Master is defined as a linked container
+	sed -i 's/localhost/'"$MASTER_PORT_8010_TCP_ADDR"'/' /usr/src/app/slave/buildbot.tac
+	sed -i 's/example-slave/'"$MASTER_ENV_SLAVE_USERNAME"'/' /usr/src/app/slave/buildbot.tac
+	sed -i 's/'"passwd \= \'pass\'"'/passwd \= '\'"$MASTER_ENV_SLAVE_PASSWORD"\''/' /usr/src/app/slave/buildbot.tac
+fi
 
 echo $SLAVE_DESCRIPTION > /usr/src/app/slave/info/host
 echo $SLAVE_ADMINISTRATOR > /usr/src/app/slave/info/admin
